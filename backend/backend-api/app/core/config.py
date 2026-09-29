@@ -18,9 +18,7 @@ DEFAULT_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    # Add your deployed frontend URL here, e.g.:
-    # "https://smart-attendance-frontend.onrender.com",
-    # "https://your-app.vercel.app",
+    "https://smart-attendance-frontend-5zgs.onrender.com",
 ]
 
 raw_origins = [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]

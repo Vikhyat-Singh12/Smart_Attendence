@@ -42,7 +42,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/smart-attendance-api[^/]*\.onrender\.com\//i,
+            urlPattern: /^https:\/\/smart-attendance-backend-k9jc\.onrender\.com\//i,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',

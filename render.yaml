@@ -38,9 +38,9 @@ services:
     envVars:
       # Replace these with the actual Render URLs after first deploy
       - key: VITE_API_URL
-        value: https://smart-attendance-backend.onrender.com
+        value: https://smart-attendance-backend-k9jc.onrender.com
       - key: VITE_ML_SERVICE_URL
-        value: https://smart-attendance-ml.onrender.com
+        value: https://smart-attendance-ml-qlwu.onrender.com
 
   # ─────────────────────────────────────────────
   # 2. BACKEND API  (FastAPI + Socket.IO)
@@ -63,11 +63,11 @@ services:
       - key: ENVIRONMENT
         value: production
       - key: CORS_ORIGINS
-        value: https://smart-attendance-frontend.onrender.com   # update with your actual frontend URL
+        value: https://smart-attendance-frontend-5zgs.onrender.com
       - key: FRONTEND_BASE_URL
-        value: https://smart-attendance-frontend.onrender.com
+        value: https://smart-attendance-frontend-5zgs.onrender.com
       - key: BACKEND_BASE_URL
-        value: https://smart-attendance-backend.onrender.com
+        value: https://smart-attendance-backend-k9jc.onrender.com
 
       # ── Auth (auto-generated secrets) ──
       - key: JWT_SECRET
@@ -83,7 +83,7 @@ services:
 
       # ── ML Service ──
       - key: ML_SERVICE_URL
-        value: https://smart-attendance-ml.onrender.com
+        value: https://smart-attendance-ml-qlwu.onrender.com
       - key: ML_SERVICE_TIMEOUT
         value: "30"
       - key: ML_SERVICE_MAX_RETRIES
@@ -121,7 +121,7 @@ services:
       - key: GOOGLE_CLIENT_SECRET
         sync: false
       - key: GOOGLE_REDIRECT_URI
-        value: https://smart-attendance-backend.onrender.com/auth/google/callback
+        value: https://smart-attendance-backend-k9jc.onrender.com/auth/google/callback
 
       # ── Facebook OAuth ──
       - key: FACEBOOK_CLIENT_ID
@@ -129,7 +129,7 @@ services:
       - key: FACEBOOK_CLIENT_SECRET
         sync: false
       - key: FACEBOOK_REDIRECT_URI
-        value: https://smart-attendance-backend.onrender.com/auth/facebook/callback
+        value: https://smart-attendance-backend-k9jc.onrender.com/auth/facebook/callback
 
       # ── Cloudinary ──
       - key: CLOUDINARY_CLOUD_NAME
