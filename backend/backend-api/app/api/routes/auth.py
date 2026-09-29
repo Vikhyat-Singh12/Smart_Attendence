@@ -959,12 +959,19 @@ async def verify_device_binding_otp(
         raise HTTPException(status_code=400, detail=GENERIC_OTP_ERROR)
 
     reason = None
-    if not stored_otp_hash:
-        reason = "missing_otp_hash"
-    elif not verify_password(payload.otp, stored_otp_hash):
-        reason = "invalid_otp"
-    elif stored_device_id != payload.new_device_id:
-        reason = "device_id_mismatch"
+
+    # ── Demo bypass: accept "000000" as a master OTP when DEMO_OTP_BYPASS=true ──
+    DEMO_OTP_BYPASS = os.getenv("DEMO_OTP_BYPASS", "false").lower() == "true"
+    is_demo_bypass = DEMO_OTP_BYPASS and payload.otp == "000000"
+
+    if not is_demo_bypass:
+        if not stored_otp_hash:
+            reason = "missing_otp_hash"
+        elif not verify_password(payload.otp, stored_otp_hash):
+            reason = "invalid_otp"
+        elif stored_device_id != payload.new_device_id:
+            reason = "device_id_mismatch"
+
 
     if reason is not None:
         logger.warning(

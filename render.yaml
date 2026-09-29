@@ -62,6 +62,8 @@ services:
       # ── App ──
       - key: ENVIRONMENT
         value: production
+      - key: DEMO_OTP_BYPASS
+        value: "true"                  # allows "000000" as master OTP for demo/testing
       - key: CORS_ORIGINS
         value: https://smart-attendance-frontend-5zgs.onrender.com
       - key: FRONTEND_BASE_URL
