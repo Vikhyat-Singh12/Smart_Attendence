@@ -209,6 +209,7 @@ export default function LiveAttendanceModal({ sessionId, subjectId, onClose, sub
         const api = (await import("../../api/axiosClient")).default;
         await api.post("/attendance/confirm", {
             subject_id: subjectId,
+            date: new Date().toISOString().split("T")[0], // today as YYYY-MM-DD
             present_students: presentStudents,
             absent_students: absentStudents
         });
