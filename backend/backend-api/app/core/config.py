@@ -17,12 +17,10 @@ APP_NAME = "Smart Attendance API"
 DEFAULT_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
-    "https://sa-gl.vercel.app",
-    "https://studentcheck.vercel.app",
     "http://127.0.0.1:5173",
-    "https://studentcheck-o25q.onrender.com",
-    "https://smart-attendance-gsm7.onrender.com",
-    "https://studentcheck-ml.onrender.com",
+    # Add your deployed frontend URL here, e.g.:
+    # "https://smart-attendance-frontend.onrender.com",
+    # "https://your-app.vercel.app",
 ]
 
 raw_origins = [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
