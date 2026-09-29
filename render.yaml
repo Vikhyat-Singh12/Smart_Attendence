@@ -62,6 +62,8 @@ services:
       # ── App ──
       - key: ENVIRONMENT
         value: production
+      - key: CORS_ORIGINS
+        value: https://smart-attendance-frontend.onrender.com   # update with your actual frontend URL
       - key: FRONTEND_BASE_URL
         value: https://smart-attendance-frontend.onrender.com
       - key: BACKEND_BASE_URL
