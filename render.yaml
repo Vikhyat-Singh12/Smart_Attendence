@@ -48,6 +48,7 @@ services:
   - type: web
     name: smart-attendance-backend
     runtime: python
+    pythonVersion: "3.12.10"
     rootDir: backend/backend-api
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
@@ -142,6 +143,7 @@ services:
   - type: web
     name: smart-attendance-ml
     runtime: python
+    pythonVersion: "3.12.10"
     rootDir: backend/ml-service
     buildCommand: pip install -r requirements.txt && python download_models.py
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
