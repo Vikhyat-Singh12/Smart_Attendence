@@ -57,7 +57,7 @@ export default function StartAttendanceModal({ sessionId, subjectId, onClose }) 
                         setLoadingLocation(false);
                         setLocationError(msg);
                     },
-                    { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+                    { enableHighAccuracy: false, timeout: 30000, maximumAge: 300000 }
                 );
                 return;
             }
@@ -66,7 +66,7 @@ export default function StartAttendanceModal({ sessionId, subjectId, onClose }) 
             setLoadingLocation(false);
             setLocationError(msg);
         },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 10000 }
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 60000 }
     );
   };
   
