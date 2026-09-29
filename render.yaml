@@ -1,0 +1,154 @@
+##############################################################
+#  render.yaml  –  Render Blueprint for Smart Attendance
+#
+#  Deploys 3 services from one GitHub repo:
+#   1. frontend   – Static site (Vite build served via Render CDN)
+#   2. backend    – FastAPI + Socket.IO (Python web service)
+#   3. ml-service – Face-recognition ML API (Python web service)
+#
+#  HOW TO USE:
+#   1. Push this repo to GitHub
+#   2. Go to https://render.com/dashboard → New → Blueprint
+#   3. Connect your GitHub repo
+#   4. Render auto-detects this file and creates all services
+#   5. Fill in the secrets marked "sync: false" in the dashboard
+##############################################################
+
+services:
+
+  # ─────────────────────────────────────────────
+  # 1. FRONTEND  (Static Site)
+  # ─────────────────────────────────────────────
+  - type: web
+    name: smart-attendance-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    pullRequestPreviewsEnabled: false
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+    routes:
+      # SPA fallback – all routes serve index.html
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      # Replace these with the actual Render URLs after first deploy
+      - key: VITE_API_URL
+        value: https://smart-attendance-backend.onrender.com
+      - key: VITE_ML_SERVICE_URL
+        value: https://smart-attendance-ml.onrender.com
+
+  # ─────────────────────────────────────────────
+  # 2. BACKEND API  (FastAPI + Socket.IO)
+  # ─────────────────────────────────────────────
+  - type: web
+    name: smart-attendance-backend
+    runtime: python
+    rootDir: backend/backend-api
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    pullRequestPreviewsEnabled: false
+    envVars:
+      # ── Database ──
+      - key: MONGO_URI
+        sync: false          # Set manually: your MongoDB Atlas connection string
+
+      # ── App ──
+      - key: ENVIRONMENT
+        value: production
+      - key: FRONTEND_BASE_URL
+        value: https://smart-attendance-frontend.onrender.com
+      - key: BACKEND_BASE_URL
+        value: https://smart-attendance-backend.onrender.com
+
+      # ── Auth (auto-generated secrets) ──
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: SESSION_SECRET_KEY
+        generateValue: true
+      - key: SESSION_COOKIE_SECURE
+        value: "true"
+      - key: SESSION_COOKIE_SAMESITE
+        value: none
+
+      # ── ML Service ──
+      - key: ML_SERVICE_URL
+        value: https://smart-attendance-ml.onrender.com
+      - key: ML_SERVICE_TIMEOUT
+        value: "30"
+      - key: ML_SERVICE_MAX_RETRIES
+        value: "3"
+      - key: ML_API_KEY
+        generateValue: true
+      - key: ML_CONFIDENT_THRESHOLD
+        value: "0.50"
+      - key: ML_UNCERTAIN_THRESHOLD
+        value: "0.60"
+
+      # ── QR / Nonce ──
+      - key: QR_JWT_SECRET
+        generateValue: true
+      - key: QR_JWT_ALGORITHM
+        value: HS256
+      - key: QR_TOKEN_TTL_SECONDS
+        value: "10"
+      - key: NONCE_TTL_SECONDS
+        value: "30"
+      - key: REDIS_URL
+        sync: false          # Set manually: Upstash or Render Redis URL
+
+      # ── Email (Brevo) ──
+      - key: BREVO_API_KEY
+        sync: false
+      - key: BREVO_SENDER_EMAIL
+        sync: false
+      - key: BREVO_SENDER_NAME
+        value: Smart Attendance
+
+      # ── Google OAuth ──
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        value: https://smart-attendance-backend.onrender.com/auth/google/callback
+
+      # ── Facebook OAuth ──
+      - key: FACEBOOK_CLIENT_ID
+        sync: false
+      - key: FACEBOOK_CLIENT_SECRET
+        sync: false
+      - key: FACEBOOK_REDIRECT_URI
+        value: https://smart-attendance-backend.onrender.com/auth/facebook/callback
+
+      # ── Cloudinary ──
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+  # ─────────────────────────────────────────────
+  # 3. ML SERVICE  (Face recognition)
+  # ─────────────────────────────────────────────
+  - type: web
+    name: smart-attendance-ml
+    runtime: python
+    rootDir: backend/ml-service
+    buildCommand: pip install -r requirements.txt && python download_models.py
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    pullRequestPreviewsEnabled: false
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: ML_API_KEY
+        sync: false          # Must match the ML_API_KEY on the backend service above
